@@ -1,0 +1,10 @@
+__pycache__
+venv
+*.env
+.vscode
+migrations/versions
+node_modules
+alembic/versions
+package-lock.json
+testgen
+.venv

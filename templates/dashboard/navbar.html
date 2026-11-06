@@ -1,0 +1,132 @@
+<header
+  class="sticky top-0 z-20 flex h-20 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6"
+>
+  <!-- Left side -->
+  <div class="flex items-center gap-4">
+    <!-- Mobile menu button -->
+    <button
+      type="button"
+      class="flex h-10 w-10 items-center justify-center rounded-lg text-xl text-slate-700 hover:bg-slate-100 lg:hidden"
+    >
+      ☰
+    </button>
+
+    <!-- Page title -->
+    <h2 class="text-xl font-bold text-slate-800 sm:text-2xl">Dashboard</h2>
+  </div>
+
+  <!-- Right side -->
+  <div class="flex items-center gap-3 sm:gap-5">
+    <!-- Current date -->
+    <div class="hidden items-center gap-2 text-sm text-slate-600 sm:flex">
+      <span> 📅 </span>
+
+      <span> {{ current_date.strftime('%d %b %Y') }} </span>
+    </div>
+
+    <!-- User profile -->
+    <div class="flex items-center gap-3">
+      <!-- User Profile Dropdown -->
+      <div x-data="{ open: false }" class="relative inline-block">
+        <!-- Profile Button -->
+        <button
+          @click="open = !open"
+          @click.outside="open = false"
+          type="button"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-gray-100"
+        >
+          <!-- User Initials -->
+          <div
+            class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-emerald-400 bg-emerald-50 text-xl font-medium text-emerald-700"
+          >
+            {{ current_user.first_name[0] | upper }}{{ current_user.last_name[0]
+            | upper }}
+          </div>
+
+          <!-- User Information -->
+          <div class="hidden text-left sm:block">
+            <p class="text-base font-semibold text-gray-800">
+              {{ current_user.first_name.capitalize() }} {{
+              current_user.last_name.capitalize() }}
+            </p>
+            <p class="text-sm text-gray-500">
+              {{ current_user.role_id.value }}
+            </p>
+          </div>
+
+          <!-- Dropdown Arrow -->
+          <svg
+            class="h-4 w-4 text-gray-500 transition-transform duration-200"
+            :class="{ 'rotate-180': open }"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
+        </button>
+        
+        <!-- Dropdown Menu -->
+        <div
+          x-show="open"
+          x-transition
+          x-cloak
+          class="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg"
+        >
+          <!-- Purchase Bill -->
+          <a
+            href="http://localhost:8000/purchase-bill"
+            class="flex w-full items-center gap-3 px-4 py-3 text-left text-gray-700 transition hover:bg-emerald-50 hover:text-emerald-700"
+          >
+            <span>Purchase Bill</span>
+          </a>
+
+          <!-- Sell Bill -->
+          <a
+            href="http://localhost:8000/sell-bill"
+            class="flex w-full items-center gap-3 px-4 py-3 text-left text-gray-700 transition hover:bg-emerald-50 hover:text-emerald-700"
+          >
+            <span>Sell Bill</span>
+          </a>
+
+          <!-- Divider -->
+          <div class="border-t border-gray-200">
+
+          </div>
+
+          <!-- Logout -->
+          <form method="POST" action="/logout">
+            <button
+              type="button"
+              @click="logout()"
+              class="flex w-full items-center gap-3 px-4 py-3 text-left text-red-600 transition hover:bg-red-50"
+            >
+              <svg
+                class="h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012 2v1"
+                />
+              </svg>
+              Logout
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</header>

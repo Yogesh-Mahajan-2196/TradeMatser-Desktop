@@ -1,0 +1,47 @@
+<div class="flex items-center justify-between">
+  <div>
+    <h2 class="text-lg font-bold text-slate-800">Recent Purchase Bills</h2>
+  </div>
+
+  <a
+    href="/recent-purchase-bills"
+    class="text-sm font-semibold text-blue-600 hover:text-blue-700"
+  >
+    View All
+  </a>
+</div>
+
+<!-- {{recent_purchases["data"]}} -->
+<div class="mt-5 space-y-4">
+  {% for purchase in recent_purchases["data"] %}
+
+  <div
+    class="flex items-center justify-between gap-3 border-b border-slate-100 pb-4"
+  >
+    <div class="min-w-0">
+      <p class="truncate text-sm font-semibold text-slate-800">
+        {{ purchase.customer_name.title() }}
+      </p>
+
+      <a href="/purchase-bill/{{ purchase.bill_no }}">
+        <p class="mt-1 text-xs text-green-500">Bill No: {{ purchase.bill_no }}</p>
+      </a>
+    </div>
+
+    <div class="shrink-0 text-right">
+      <p class="text-sm font-semibold text-slate-800">
+        ₹{{ "{:,.2f}".format(purchase.total_amount) }}
+      </p>
+
+      <p class="mt-1 text-xs text-slate-500">{{ purchase.date.strftime("%d-%m-%Y") }}</p>
+    </div>
+  </div>
+
+  {% else %}
+
+  <div class="rounded-lg bg-slate-50 p-5 text-center text-sm text-slate-500">
+    No recent purchase bills found.
+  </div>
+
+  {% endfor %}
+</div>

@@ -1,0 +1,74 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+Dashboard | MyTradeMaster 
+{% endblock %} 
+
+
+{% block content %}
+
+<div class="flex h-screen overflow-hidden">
+  <!-- Sidebar -->
+  {% include "dashboard/sidebar.html" %}
+
+  <!-- Main Dashboard -->
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <!-- Navbar -->
+    {% include "dashboard/navbar.html" %}
+
+    <!-- Dashboard Content -->
+    <main
+      class="min-w-0 flex-1 overflow-y-auto overflow-x-hidden bg-slate-100 p-4 sm:p-5 lg:p-6"
+    >
+      <!-- Summary Cards -->
+      {% include "dashboard/summary_cards.html" %}
+
+      <!-- First Row -->
+      <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <!-- Purchase vs Sell -->
+        <section
+          class="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2"
+        >
+          {% include "dashboard/purchase_vs_sell.html" %}
+        </section>
+
+        <!-- Recent Purchases -->
+        <section
+          class="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          {% include "dashboard/recent_purchases.html" %}
+        </section>
+      </div>
+
+      <!-- Second Row -->
+      <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <!-- Stock Summary -->
+        <section
+          class="min-w-0 min-h-80 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          {% include "dashboard/stock_summary.html" %}
+        </section>
+
+        <!-- Outstanding Receivables -->
+        <section
+          class="min-w-0 min-h-80 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          {% include "dashboard/outstanding_receivables.html" %}
+        </section>
+
+        <!-- Outstanding Payables -->
+        <section
+          class="min-w-0 min-h-80 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          {% include "dashboard/outstanding_payables.html" %}
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', path='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block title %}
+Purchase Bill | MyTradeMaster
+{% endblock %}
+
+{% block content %}
+
+<div
+    x-data="purchaseBill({{ next_bill_no }})"
+    x-init="init()"
+    class="flex min-h-screen w-full flex-col bg-slate-100"
+>
+    <!-- Header -->
+   <header class="w-full shrink-0 bg-green-900">
+    {% include 'bill_page/header.html' %}
+    </header>
+
+    <!-- Main -->
+    <main class="purchase-bill-page min-h-0 w-full flex-1 bg-slate-100">
+        <div class="purchase-bill-print-area grid w-full grid-cols-1 gap-4 p-3 sm:gap-5 sm:p-5 lg:grid-cols-2 lg:items-start lg:gap-5 lg:p-5">
+            <section class="purchase-bill-copy flex w-full items-start justify-center">
+                <div class="purchase-bill-paper w-full max-w-162 overflow-auto">
+                    {% include 'purchase_bill/original_bill.html' %}
+                </div>
+            </section>
+
+            <section class="purchase-bill-copy flex w-full items-start justify-center">
+                <div class="purchase-bill-paper w-full max-w-162 overflow-auto">
+                    {% include 'purchase_bill/duplicate_bill.html' %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bill-page-footer sticky bottom-0 z-40 w-full shrink-0">
+    {% include 'bill_page/purchase_footer.html' %}
+  </footer>
+</div>
+
+{% endblock %}
+
+
+{% block css %}
+<style>
+@media print {
+
+/* -------------------------------------------------------
+    A4 LANDSCAPE
+    ------------------------------------------------------- */
+
+@page {
+    size: A4 portrait;
+    margin: 0;
+}
+
+
+/* -------------------------------------------------------
+    ROOT PAGE
+    ------------------------------------------------------- */
+
+html,
+body {
+    width: 297mm !important;
+    min-width: 297mm !important;
+
+    height: 230mm !important;
+    min-height: 230mm !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+}
+
+
+body {
+    overflow: hidden !important;
+}
+
+
+/* -------------------------------------------------------
+    HIDE APPLICATION UI
+    ------------------------------------------------------- */
+
+.app-header,
+.bill-footer,
+.bill-page-footer,
+body > footer {
+    display: none !important;
+}
+
+
+/* -------------------------------------------------------
+    MAIN PAGE
+    ------------------------------------------------------- */
+
+.purchase-bill-page {
+    display: block !important;
+
+    width: 297mm !important;
+    height: 230mm !important;
+    min-height: 230mm !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+
+    overflow: hidden !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* -------------------------------------------------------
+    TWO BILLS
+    ------------------------------------------------------- */
+
+.purchase-bill-print-area {
+    display: grid !important;
+
+    grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr) !important;
+
+    grid-template-rows: 1fr !important;
+
+    width: 297mm !important;
+    height: 230mm !important;
+    min-height: 230mm !important;
+
+    margin: 0 !important;
+
+    /*
+    Small internal spacing.
+    This replaces @page margins.
+    */
+    padding: 4mm !important;
+
+    column-gap: 4mm !important;
+    row-gap: 0 !important;
+
+    box-sizing: border-box !important;
+
+    align-items: start !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff !important;
+}
+
+
+/* -------------------------------------------------------
+    EACH COPY
+    ------------------------------------------------------- */
+
+.purchase-bill-copy {
+    display: block !important;
+
+    width: 100% !important;
+    height: 230mm !important;
+
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    box-sizing: border-box !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+
+/* -------------------------------------------------------
+    BILL PAPER
+    ------------------------------------------------------- */
+
+.purchase-bill-paper {
+    display: block !important;
+
+    width: 100% !important;
+    height: 230mm !important;
+
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff !important;
+
+    box-shadow: none !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+
+/* -------------------------------------------------------
+    REMOVE SCROLL CONTAINERS
+    ------------------------------------------------------- */
+
+.purchase-bill-print-area .overflow-auto,
+.purchase-bill-print-area .overflow-x-auto,
+.purchase-bill-print-area .overflow-y-auto {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+
+
+/* -------------------------------------------------------
+    INNER BILL CONTAINERS
+    ------------------------------------------------------- */
+
+.purchase-bill-item {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: visible !important;
+
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+
+.purchase-bill-item > div {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    height: auto !important;
+
+    overflow: visible !important;
+}
+
+
+.purchase-bill-item section {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+
+/* -------------------------------------------------------
+    TABLES
+    ------------------------------------------------------- */
+
+.purchase-bill-item table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    table-layout: fixed !important;
+}
+
+
+.purchase-bill-item tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+
+/* -------------------------------------------------------
+    FORM ELEMENTS
+    ------------------------------------------------------- */
+
+.purchase-bill-item input,
+.purchase-bill-item select,
+.purchase-bill-item textarea {
+    max-width: 100% !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+
+/* -------------------------------------------------------
+    PREVENT EXTRA PAGE
+    ------------------------------------------------------- */
+
+.purchase-bill-print-area,
+.purchase-bill-copy,
+.purchase-bill-paper {
+    break-before: avoid !important;
+    break-after: avoid !important;
+}
+
+.purchase-bill-paper .signature-section,
+    .purchase-bill-paper .bill-signature,
+    .purchase-bill-paper .purchase-bill-signature {
+        display: block !important;
+
+        visibility: visible !important;
+
+        overflow: visible !important;
+
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', path='js/purchase_bill.js') }}"></script>
+{% endblock %}

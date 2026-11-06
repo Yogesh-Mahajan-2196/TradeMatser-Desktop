@@ -1,0 +1,357 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+Products | MyTradeMaster 
+{% endblock %} 
+
+{% block content %}
+
+<div
+  class="flex h-screen overflow-hidden bg-gray-50"
+  x-data="productManager()"
+  x-init="loadProducts()"
+>
+  {% include "dashboard/sidebar.html" %}
+
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    {% include "dashboard/navbar.html" %}
+
+    <!-- Main Content -->
+
+    <main
+      class="min-w-0 flex-1 overflow-x-hidden bg-slate-100 p-4 sm:p-5 lg:p-6"
+    >
+      <!-- Page Header -->
+        <div
+            class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+            <!-- Page Title -->
+
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">
+                Products
+                </h1>
+
+                <p class="mt-1 text-sm text-slate-500">
+                Manage your grain products.
+                </p>
+            </div>
+
+
+            <!-- Action Buttons -->
+
+            <div
+                class="flex flex-col gap-3 sm:flex-row sm:items-center"
+            >
+
+                <!-- Create Product -->
+
+                <button
+                type="button"
+                @click="openCreateModal()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                >
+
+                <!-- Plus Icon -->
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M12 5v14" />
+
+                    <path d="M5 12h14" />
+                </svg>
+
+                Create Product
+
+                </button>
+
+
+                <!-- Back to Dashboard -->
+
+                <a
+                href="/dashboard"
+                class="inline-flex items-center justify-center rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                ← Back to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+      <!-- Loading -->
+
+      <div
+        x-show="loading"
+        x-cloak
+        class="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm"
+      >
+        <p class="text-sm text-slate-500">Loading products...</p>
+      </div>
+
+      <!-- Error -->
+
+      <div
+        x-show="error"
+        x-cloak
+        class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+      >
+        <span x-text="error"></span>
+      </div>
+
+      <!-- Product Cards -->
+
+      <div
+        x-show="
+          !loading &&
+          products.length > 0
+        "
+        class="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      >
+        <template x-for="product in products" :key="product.produc_id">
+          <article
+            class="relative flex min-h-32 items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+            >
+            <!-- Product Icon -->
+
+            <div
+                class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+            >
+                <!-- Grain/Product Icon -->
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-vegan-icon lucide-vegan"><path d="M16 8q6 0 6-6-6 0-6 6"/><path d="M17.41 3.59a10 10 0 1 0 3 3"/><path d="M2 2a26.6 26.6 0 0 1 10 20c.9-6.82 1.5-9.5 4-14"/></svg>
+            </div>
+
+            <!-- Product Information -->
+
+            <div class="min-w-0 flex-1">
+                <!-- Product Name -->
+
+                <h2
+                class="truncate pr-8 text-lg font-bold text-slate-800"
+                x-text="product.product_name"
+                ></h2>
+
+                <!-- Unit -->
+
+                <div
+                class="mt-2 inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600"
+                >
+                Unit:
+
+                <span class="ml-1" x-text="product.unit"></span>
+                </div>
+            </div>
+
+            <!-- Update Button -->
+
+            <button
+                type="button"
+                @click="openUpdateModal(product)"
+                class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                title="Update product"
+            >
+                <!-- Edit Icon -->
+
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4.5 w-4.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                >
+                <path d="M12 20h9" />
+
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
+            </button>
+            </article>
+        </template>
+      </div>
+
+      <!-- Empty State -->
+
+      <div
+        x-show="
+          !loading &&
+          products.length === 0 &&
+          !error
+        "
+        x-cloak
+        class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center"
+      >
+        <h2 class="text-lg font-bold text-slate-700">No products found</h2>
+
+        <p class="mt-2 text-sm text-slate-500">
+          Create your first product to get started.
+        </p>
+
+        <button
+          type="button"
+          @click="openCreateModal()"
+          class="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+        >
+          Create Product
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create / Update Modal -->
+
+  <div
+    x-show="showModal"
+    x-cloak
+    @keydown.escape.window="closeModal()"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+  >
+    <!-- Modal Background -->
+
+    <div @click="closeModal()" class="absolute inset-0 bg-slate-900/50"></div>
+
+    <!-- Modal Content -->
+
+    <div
+      @click.stop
+      class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+    >
+      <!-- Modal Header -->
+
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2
+            class="text-xl font-bold text-slate-800"
+            x-text="
+              isEditMode
+                ? 'Update Product'
+                : 'Create Product'
+            "
+          ></h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            <span
+              x-text="
+                isEditMode
+                  ? 'Update the product details.'
+                  : 'Add a new product.'
+              "
+            ></span>
+          </p>
+        </div>
+
+        <!-- Close -->
+
+        <button
+          type="button"
+          @click="closeModal()"
+          class="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Form -->
+
+      <form class="mt-6 space-y-5" @submit.prevent="saveProduct()">
+        <!-- Product Name -->
+
+        <div>
+          <label class="mb-2 block text-sm font-semibold text-slate-700">
+            Product Name
+          </label>
+
+          <input
+            type="text"
+            x-model.trim="form.product_name"
+            placeholder="Enter product name"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+
+        <!-- Unit -->
+
+        <div>
+          <label class="mb-2 block text-sm font-semibold text-slate-700">
+            Unit
+          </label>
+
+          <select
+            x-model="form.unit"
+            required
+            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          >
+            <option value="">Select unit</option>
+
+            <option value="QUINTAL">Quintal</option>
+
+            <option value="KG">Kilogram</option>
+
+            <option value="TON">Ton</option>
+          </select>
+        </div>
+
+        <!-- Form Error -->
+
+        <p
+          x-show="formError"
+          x-cloak
+          class="text-sm text-red-600"
+          x-text="formError"
+        ></p>
+
+        <!-- Buttons -->
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            @click="closeModal()"
+            :disabled="saving"
+            class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            :disabled="saving"
+            class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <span
+              x-show="!saving"
+              x-text="
+                isEditMode
+                  ? 'Update Product'
+                  : 'Create Product'
+              "
+            ></span>
+
+            <span x-show="saving" x-cloak> Saving... </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %} 
+
+{% block javascript %}
+
+<script src="{{ url_for(
+    'static',
+    path='js/product.js'
+  ) }}"></script>
+
+{% endblock %}

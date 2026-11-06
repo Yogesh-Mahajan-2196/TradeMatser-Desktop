@@ -1,0 +1,39 @@
+<div class="flex items-center justify-between">
+  <div>
+    <h2 class="text-lg font-bold text-slate-800">Outstanding Receivables</h2>
+  </div>
+  <a
+    href="/export-sell-reports?payment_status=Unpaid"
+    class="text-sm font-semibold text-blue-600 hover:text-blue-700"
+  >
+    View All
+  </a>
+</div>
+
+<div
+  class="grid grid-cols-2 gap-4 mt-5 border-b border-slate-200 pb-3 text-sm font-medium text-slate-500">
+  <p>Customer Name</p>
+  <p class="text-right">Outstanding Amount</p>
+</div>
+
+<div class="mt-5 space-y-3">
+  {% for item in outstanding_receivables.data %}
+
+  <div
+    class="flex items-center justify-between gap-3 border-b border-slate-100 pb-4"
+  >
+    <p class="text-sm font-semibold text-slate-700">{{ item.party_name.title() }}</p>
+
+    <p class="text-sm font-semibold">
+      ₹{{ "{:,.2f}".format(item.outstanding_amount) }}
+    </p>
+  </div>
+
+  {% else %}
+
+  <p class="py-5 text-center text-sm text-slate-500">
+    No outstanding receivables.
+  </p>
+
+  {% endfor %}
+</div>

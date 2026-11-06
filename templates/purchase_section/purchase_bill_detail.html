@@ -1,0 +1,295 @@
+{% extends "base.html" %} {% block title %} Purchase Bill Details |
+MyTradeMaster {% endblock %} {% block content %}
+
+<div class="flex min-h-screen">
+  {% include "dashboard/sidebar.html" %}
+
+  <div class="flex min-w-0 flex-1 flex-col">
+    {% include "dashboard/navbar.html" %}
+
+    <!-- Main Content -->
+    <main
+      class="min-w-0 flex-1 overflow-x-hidden bg-slate-100 p-4 sm:p-5 lg:p-6"
+    >
+      <!-- Page Header -->
+
+      <div
+        class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold text-slate-800">
+              Purchase Bill Details
+            </h1>
+
+            {% if purchase.remark == "PAID" %}
+
+            <span
+              class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+            >
+              Paid
+            </span>
+
+            {% else %}
+
+            <span
+              class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+            >
+              Unpaid
+            </span>
+
+            {% endif %}
+          </div>
+
+          <p class="mt-1 text-sm text-slate-500">
+            View complete details for purchase bill
+            <span class="font-semibold text-slate-700">
+              PB-{{ purchase.bill_no }}
+            </span>
+          </p>
+        </div>
+
+        <!-- Back Button -->
+
+        <a
+          href="/recent-purchase-bills"
+          class="inline-flex w-fit items-center rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          ← Back to Purchase Bills
+        </a>
+      </div>
+
+      <!-- Bill Information -->
+
+      <section
+        class="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      >
+        <!-- Card Header -->
+
+        <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+          <h2 class="text-lg font-semibold text-slate-800">Bill Information</h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Purchase bill details and transaction information.
+          </p>
+        </div>
+
+        <!-- Card Body -->
+
+        <div class="grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Bill Number -->
+
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+            >
+              Bill Number
+            </p>
+
+            <p class="mt-1 text-base font-bold text-blue-600">
+              PB-{{ purchase.bill_no }}
+            </p>
+          </div>
+
+          <!-- Bill Date -->
+
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+            >
+              Bill Date
+            </p>
+
+            <p class="mt-1 text-base font-medium text-slate-700">
+              {{ purchase.bill_date.strftime("%d-%m-%Y") }}
+            </p>
+          </div>
+
+          <!-- Payment Status -->
+
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+            >
+              Payment Status
+            </p>
+
+            <div class="mt-2">
+              {% if purchase.remarks == "PAID" %}
+
+              <span
+                class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+              >
+                Paid
+              </span>
+
+              {% else %}
+
+              <span
+                class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+              >
+                Unpaid
+              </span>
+
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Vehicle Number -->
+
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+            >
+              Vehicle Number
+            </p>
+
+            <p class="mt-1 text-base font-medium text-slate-700">
+              {% if purchase.vehicle_no %} {{ purchase.vehicle_no }} {% else %}
+              - {% endif %}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Farmer Information -->
+
+      <section
+        class="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      >
+        <!-- Card Header -->
+
+        <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+          <h2 class="text-lg font-semibold text-slate-800">
+            Farmer Information
+          </h2>
+        </div>
+
+        <!-- Card Body -->
+
+        <div class="grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Farmer Name -->
+
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-wide text-slate-400"
+            >
+              Farmer Name
+            </p>
+
+            <p class="mt-1 text-base font-semibold text-slate-700">
+              {{ purchase.supplier_name.title() }}
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Product Details -->
+
+      <section
+        class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      >
+        <!-- Card Header -->
+
+        <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+          <h2 class="text-lg font-semibold text-slate-800">Product Details</h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Product and purchase amount information.
+          </p>
+        </div>
+
+        <!-- Table -->
+
+        <div class="overflow-x-auto">
+          <table class="min-w-200 w-full text-left text-sm">
+            <!-- Table Header -->
+
+            <thead class="bg-slate-50 text-slate-600">
+              <tr>
+                <th class="whitespace-nowrap px-5 py-4 font-semibold">
+                  Product
+                </th>
+
+                <th
+                  class="whitespace-nowrap px-5 py-4 text-right font-semibold"
+                >
+                  Weight
+                </th>
+
+                <th
+                  class="whitespace-nowrap px-5 py-4 text-right font-semibold"
+                >
+                  Rate
+                </th>
+
+                <th
+                  class="whitespace-nowrap px-5 py-4 text-right font-semibold"
+                >
+                  Total Amount
+                </th>
+              </tr>
+            </thead>
+
+            <!-- Table Body -->
+
+            <tbody>
+              <tr class="border-t border-slate-100">
+                <!-- Product -->
+
+                <td
+                  class="whitespace-nowrap px-5 py-5 font-semibold text-slate-700"
+                >
+                  {{ purchase.product }}
+                </td>
+
+                <!-- Weight -->
+
+                <td
+                  class="whitespace-nowrap px-5 py-5 text-right text-slate-700"
+                >
+                  {{ purchase.weight }}
+                </td>
+
+                <!-- Rate -->
+
+                <td
+                  class="whitespace-nowrap px-5 py-5 text-right text-slate-700"
+                >
+                  ₹{{ "{:,.2f}".format( purchase.rate ) }}
+                </td>
+
+                <!-- Total Amount -->
+
+                <td
+                  class="whitespace-nowrap px-5 py-5 text-right text-lg font-bold text-slate-800"
+                >
+                  ₹{{ "{:,.2f}".format( purchase.total_amount
+                  ) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Total Summary -->
+
+        <div
+          class="flex justify-end border-t border-slate-200 bg-slate-50 px-5 py-5"
+        >
+          <div class="text-right">
+            <p class="text-sm text-slate-500">Total Purchase Amount</p>
+
+            <p class="mt-1 text-2xl font-bold text-green-600">
+              ₹{{ "{:,.2f}".format( purchase.total_amount )
+              }}
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+{% endblock %}

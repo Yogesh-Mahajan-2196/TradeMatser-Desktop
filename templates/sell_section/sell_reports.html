@@ -1,0 +1,1011 @@
+{% extends "base.html" %} {% block title %} Sell Bill Export | MyTradeMaster {%
+endblock %} {% block content %}
+
+<div class="flex h-screen overflow-hidden bg-gray-50" x-data="sellExport()">
+  {% include "dashboard/sidebar.html" %}
+
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    {% include "dashboard/navbar.html" %}
+
+    <main
+      class="min-w-0 flex-1 overflow-x-hidden bg-slate-100 p-4 sm:p-5 lg:p-6"
+    >
+      <!-- Page Heading -->
+      <div
+        class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Sell Bill Export</h1>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Filter sell bills, preview records, and export the report to Excel.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Download Button -->
+          <button
+            type="button"
+            x-show="hasPreview"
+            x-cloak
+            @click="downloadExcel()"
+            :disabled="downloading"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <!-- Excel/download icon -->
+            <svg
+              class="h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 16V4m0 12-4-4m4 4 4-4M5 20h14"
+              />
+            </svg>
+
+            <span
+              x-text="
+                  downloading
+                    ? 'Downloading...'
+                    : 'Download Excel'
+                "
+            ></span>
+          </button>
+
+          <!-- Dashboard Button -->
+          <a
+            href="/dashboard"
+            class="inline-flex w-fit items-center justify-center rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            ← Back to Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- Filter Card -->
+      <section
+        class="mb-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:flex-wrap">
+          <!-- Date Range Filter -->
+          <div class="relative w-full md:w-72">
+            <!-- Calendar Icon -->
+            <svg
+              class="pointer-events-none absolute left-2 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3M5 11h14M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"
+              />
+            </svg>
+
+            <div
+              class="flex py-2.5 items-center rounded-lg border border-slate-300 bg-slate-50 pl-8 pr-3 transition focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-100"
+            >
+              <!-- From Date -->
+              <input
+                type="date"
+                x-model="filters.from_date"
+                @change="filterChanged()"
+                aria-label="From date"
+                class="min-w-0 flex-1 bg-transparent text-sm text-slate-700 outline-none"
+              />
+
+              <span class="mx-1 text-sm text-slate-400"> To </span>
+
+              <!-- To Date -->
+              <input
+                type="date"
+                x-model="filters.to_date"
+                @change="filterChanged()"
+                aria-label="To date"
+                class="min-w-0 flex-1 bg-transparent text-sm text-slate-700 outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Product ID Filter -->
+          <div class="relative w-full md:w-56">
+            <!-- Product/Search Icon -->
+            <svg
+              class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4m4 4h8"
+              />
+            </svg>
+
+            <input
+              type="number"
+              min="1"
+              x-model="filters.product_id"
+              @input.debounce.500ms="filterChanged()"
+              placeholder="Enter product ID"
+              class="py-2.5 w-full rounded-lg border border-slate-300 bg-slate-50 pl-12 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+            />
+          </div>
+
+          <!-- Payment Status Filter -->
+          <div class="flex items-center gap-3 w-full md:w-72">
+            <div class="relative min-w-0 flex-1">
+              <!-- Filter Icon -->
+              <svg
+                class="pointer-events-none absolute left-4 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-slate-400"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 4h18M6 10h12M10 16h4"
+                />
+              </svg>
+
+              <select
+                x-model="filters.payment_status"
+                @change="filterChanged()"
+                class="py-2.5 w-full appearance-none rounded-lg border border-slate-300 bg-slate-50 pl-12 pr-12 text-sm text-slate-700 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+              >
+                <option value="">All Payment Status</option>
+
+                <option value="Paid">Paid</option>
+
+                <option value="Unpaid">Unpaid</option>
+              </select>
+
+              <!-- Custom Dropdown Arrow -->
+              <svg
+                class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m6 9 6 6 6-6"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Bill No -->
+          <div class="relative w-full md:w-48">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input
+              type="number"
+              min="1"
+              placeholder="Enter bill number"
+              x-model="filters.bill_no"
+              @input.debounce.500ms="filterChanged()"
+              class="py-2.5 w-full rounded-lg border border-slate-300 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+            />
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              x-show="hasActiveFilters"
+              x-cloak
+              type="button"
+              @click="clearFilters()"
+              title="Clear filters"
+              class="flex py-2.5 w-13.5 shrink-0 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x-icon lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Error Message -->
+      <div
+        x-show="error"
+        x-cloak
+        class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        <span x-text="error"></span>
+      </div>
+
+      <!-- Initial Empty State -->
+      <section
+        x-show="!hasPreview && !loading"
+        class="rounded-lg border border-dashed border-gray-300 bg-white py-16 text-center"
+      >
+        <svg
+          class="mx-auto h-14 w-14 text-gray-300"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M9 17v-2a4 4 0 014-4h2m-6 6h6m4-8a3 3 0 100-6 3 3 0 000 6z"
+          />
+        </svg>
+
+        <h3 class="mt-4 text-lg font-semibold text-gray-700">
+          No report preview
+        </h3>
+
+        <p class="mt-1 text-sm text-gray-500">
+          Apply filters and click “Preview Report” to view sell records.
+        </p>
+      </section>
+
+      <!-- Loading -->
+      <section
+        x-show="loading"
+        x-cloak
+        class="rounded-lg border border-gray-200 bg-white py-16 text-center"
+      >
+        <div
+          class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-emerald-600"
+        ></div>
+
+        <p class="mt-4 text-sm text-gray-500">Loading sell records...</p>
+      </section>
+
+      <!-- Preview Table -->
+      <section
+        x-show="hasPreview && !loading"
+        x-cloak
+        class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
+      >
+        <div
+          class="flex flex-col gap-2 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <h2 class="text-lg font-semibold text-gray-800">
+            Sell Report Preview
+          </h2>
+
+          <p class="text-sm text-gray-500">
+            Total Records:
+            <span class="font-semibold" x-text="total"></span>
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Bill No.
+                </th>
+
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Date
+                </th>
+
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Company Name
+                </th>
+
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Product
+                </th>
+
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Weight
+                </th>
+
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Broker
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500"
+                >
+                  Remark
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100 bg-white">
+              <template x-for="item in records" :key="item.bill_no">
+                <tr
+                  @click="openBillModal(item)"
+                  class="cursor-pointer transition hover:bg-emerald-50"
+                >
+                <!-- Bill No -->
+                <td
+                class="whitespace-nowrap px-4 py-3 text-sm font-semibold text-gray-800"
+                x-text="item.bill_no"
+                ></td>
+
+                <!-- Date -->
+                <td
+                  class="whitespace-nowrap px-4 py-3 text-sm text-gray-600"
+                  x-text="formatDate(item.bill_date)"
+                ></td>
+                
+                  <!-- Company -->
+                  <td
+                    class="whitespace-nowrap px-4 py-3 text-sm text-gray-600"
+                    x-text="item.company_name || item.customer_name || '-'"
+                  ></td>
+
+                  <!-- Broker -->
+                  <td
+                    class="whitespace-nowrap px-4 py-3 text-sm text-gray-600"
+                    x-text="item.product_name || '-'"
+                  ></td>
+
+                  <!-- PO -->
+                  <td
+                    class="whitespace-nowrap px-4 py-3 text-sm text-gray-600"
+                    x-text="item.weight || '-'"
+                  ></td>
+
+                  <!-- Product -->
+                  <td
+                    class="whitespace-nowrap px-4 py-3 text-sm text-gray-600"
+                    x-text="item.broker || '-'"
+                  ></td>
+
+                  <!-- Remark -->
+                  <td
+                    class="whitespace-nowrap px-4 py-3 text-sm text-gray-600"
+                  >
+                  <span
+                      class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                      :class="
+                        item.remark === 'Unpaid'
+                            ? 'bg-amber-50 text-amber-700'
+                            : 'bg-emerald-50 text-emerald-700'
+                    "
+                      x-text="item.remark || '-'"
+                    ></span>
+                  </td>
+                </tr>
+              </template>
+
+              <!-- No records -->
+              <tr x-show="hasPreview && records.length === 0">
+                <td
+                  colspan="6"
+                  class="px-5 py-12 text-center text-sm text-gray-500"
+                >
+                  No sell records found for the selected filters.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div
+          x-show="total > 0"
+          class="flex flex-col gap-3 border-t border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p class="text-sm text-gray-500">
+            Page
+            <span x-text="page"></span>
+            of
+            <span x-text="totalPages"></span>
+          </p>
+
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              @click="previousPage()"
+              :disabled="page <= 1"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            <button
+              type="button"
+              @click="nextPage()"
+              :disabled="
+                page >= totalPages
+              "
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Edit Sell Bill Modal -->
+  <div
+    x-show="editModalOpen"
+    x-cloak
+    x-transition.opacity
+    class="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4"
+    @keydown.escape.window="closeEditModal()"
+  >
+    <!-- Modal -->
+    <div
+      x-show="editModalOpen"
+      x-transition
+      @click.outside="closeEditModal()"
+      class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+    >
+      <!-- Modal Header -->
+      <div
+        class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-6 py-4"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-gray-800">
+            Update Sell Bill Payment
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Bill No:
+            <span
+              class="font-semibold text-gray-700"
+              x-text="editBill.bill_no"
+            ></span>
+          </p>
+        </div>
+
+        <!-- Close -->
+        <button
+          type="button"
+          @click="closeEditModal()"
+          class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-200"
+        >
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="space-y-5 p-6">
+        <!-- Bill Information -->
+        <div
+          class="grid grid-cols-1 gap-4 rounded-xl bg-gray-50 p-4 sm:grid-cols-2"
+        >
+          <div>
+            <p class="text-xs font-medium uppercase text-gray-400">Supplier</p>
+
+            <p
+              class="mt-1 font-medium text-gray-800"
+              x-text="editBill.customer_name || '-'"
+            ></p>
+          </div>
+
+          <div>
+            <p class="text-xs font-medium uppercase text-gray-400">Product</p>
+
+            <p
+              class="mt-1 font-medium text-gray-800"
+              x-text="editBill.product_name || '-'"
+            ></p>
+          </div>
+
+          <div>
+            <p class="text-xs font-medium uppercase text-gray-400">Bill Date</p>
+
+            <p
+              class="mt-1 font-medium text-gray-800"
+              x-text="formatDate(editBill.bill_date)"
+            ></p>
+          </div>
+
+          <div>
+            <p class="text-xs font-medium uppercase text-gray-400">
+              Total Amount
+            </p>
+
+            <p
+              class="mt-1 font-semibold text-gray-800"
+              x-text="'₹ ' + formatAmount(editBill.total_amount)"
+            ></p>
+          </div>
+        </div>
+
+        <!-- Payment Status -->
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700">
+                Payment Status
+            </label>
+
+            <!-- View mode -->
+            <div
+                x-show="!editing"
+                class="flex h-12.5 items-center rounded-xl border border-gray-300 bg-gray-100 px-4 text-base text-gray-800"
+                x-text="editForm.remark || '-'"
+            ></div>
+
+            <!-- Edit mode -->
+            <select
+                x-show="editing"
+                x-model="editForm.remark"
+                class="h-12.5 w-full rounded-xl border border-gray-300 bg-white px-4 text-lg text-gray-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+            >
+                <option value="Paid">Paid</option>
+                <option value="Unpaid">Unpaid</option>
+            </select>
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700">
+            Expense
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            x-model="editForm.expense"
+            :disabled="!editing"
+            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none disabled:cursor-not-allowed disabled:bg-gray-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+          />
+        </div>
+
+        <!-- Error -->
+        <div
+          x-show="editError"
+          x-cloak
+          class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
+        >
+          <span x-text="editError"></span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div
+        class="flex items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4"
+      >
+        <!-- Close -->
+        <button
+          type="button"
+          x-show="!editing"
+          @click="closeEditModal()"
+          class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          Close
+        </button>
+
+        <!-- Cancel -->
+        <button
+          type="button"
+          x-show="editing"
+          @click="cancelEditing()"
+          :disabled="saving"
+          class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Cancel
+        </button>
+
+        <!-- Save -->
+        <button
+          type="button"
+          x-show="editing"
+          @click="saveSellBill()"
+          :disabled="saving"
+          class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span x-text="saving ? 'Saving...' : 'Save Changes'"></span>
+        </button>
+
+        <!-- Edit -->
+        <button
+          type="button"
+          x-show="!editing && editBill.remark === 'Unpaid'"
+          @click="startEditing()"
+          class="rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-amber-600"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sell Bill Details Modal -->
+  <div
+    x-show="billModalOpen"
+    x-cloak
+    x-transition.opacity
+    class="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4"
+    @keydown.escape.window="closeBillModal()"
+  >
+    <div
+      x-show="billModalOpen"
+      x-transition
+      @click.outside="closeBillModal()"
+      class="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+    >
+      <!-- Header -->
+      <div
+        class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4"
+      >
+        <div>
+          <h2 class="text-lg font-semibold text-gray-800">Sell Bill Details</h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Bill No:
+            <span
+              class="font-semibold text-gray-700"
+              x-text="selectedBill.bill_no || '-'"
+            ></span>
+          </p>
+        </div>
+
+        <button
+          type="button"
+          @click="closeBillModal()"
+          class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="space-y-5 p-6">
+        <!-- Bill Information -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">
+            Bill Information
+          </h3>
+
+          <div
+            class="grid grid-cols-1 gap-4 rounded-xl bg-gray-50 p-4 sm:grid-cols-3"
+          >
+            <div>
+              <p class="text-xs uppercase text-gray-400">Bill Date</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="formatDate(selectedBill.bill_date)"
+              ></p>
+            </div>
+
+            <div>
+              <p class="text-xs uppercase text-gray-400">Company Name</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="selectedBill.company_name || selectedBill.customer_name || '-'"
+              ></p>
+            </div>
+
+            <div>
+              <p class="text-xs uppercase text-gray-400">Address</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="selectedBill.address || '-'"
+              ></p>
+            </div>
+
+            <div>
+              <p class="text-xs uppercase text-gray-400">Broker Name</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="selectedBill.broker || '-'"
+              ></p>
+            </div>
+
+            <div>
+              <p class="text-xs uppercase text-gray-400">Truck No.</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="selectedBill.truck_no || '-'"
+              ></p>
+            </div>
+
+            <div>
+              <p class="text-xs uppercase text-gray-400">PO No.</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="selectedBill.po_no || '-'"
+              ></p>
+            </div>
+
+            <div>
+              <p class="text-xs uppercase text-gray-400">Bags</p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+                x-text="selectedBill.bags || 0"
+              ></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Information -->
+        <div>
+          <h3 class="mb-3 text-sm font-semibold text-gray-700">
+            Product Information
+          </h3>
+
+          <div class="overflow-hidden rounded-xl border border-gray-200">
+            <table class="min-w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-4 py-3 text-left text-xs font-semibold text-gray-500"
+                  >
+                    Product
+                  </th>
+
+                  <th
+                    class="px-4 py-3 text-right text-xs font-semibold text-gray-500"
+                  >
+                    Weight
+                  </th>
+
+                  <th
+                    class="px-4 py-3 text-right text-xs font-semibold text-gray-500"
+                  >
+                    Rate
+                  </th>
+
+                  <th
+                    class="px-4 py-3 text-right text-xs font-semibold text-gray-500"
+                  >
+                    Gross
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr class="border-t border-gray-100">
+                  <td
+                    class="px-4 py-3 text-sm font-medium text-gray-800"
+                    x-text="selectedBill.product_name"
+                  ></td>
+
+                  <td
+                    class="px-4 py-3 text-right text-sm text-gray-600"
+                    x-text="selectedBill.weight"
+                  ></td>
+
+                  <td
+                    class="px-4 py-3 text-right text-sm text-gray-600"
+                    x-text="formatAmount(selectedBill.rate)"
+                  ></td>
+
+                  <td
+                    class="px-4 py-3 text-right text-sm font-medium text-emerald-600"
+                    x-text="formatAmount(selectedBill.gross_amount)"
+                  ></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Amount Information -->
+        <div
+          class="grid grid-cols-1 gap-4 rounded-xl bg-gray-50 p-4 sm:grid-cols-3"
+        >
+          <div>
+            <p class="text-xs uppercase text-gray-400">Gross Amount</p>
+
+            <p
+              class="mt-1 text-lg font-semibold text-emerald-600"
+              x-text="'₹ ' + formatAmount(getGrossAmount())"
+            ></p>
+          </div>
+
+          <div>
+            <p class="text-xs uppercase text-gray-400">Expenses</p>
+
+            <p
+              class="mt-1 text-lg font-semibold text-amber-600"
+              x-text="'₹ ' + formatAmount(getExpenseAmount())"
+            ></p>
+          </div>
+
+          <div>
+            <p class="text-xs uppercase text-gray-400">Net Amount</p>
+
+            <p
+              class="mt-1 text-lg font-semibold text-red-600"
+              x-text="'₹ ' + formatAmount(getNetAmount())"
+            ></p>
+          </div>
+        </div>
+
+        <!-- Payment & Expense -->
+        <div class="rounded-xl border border-gray-200 p-4">
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Payment Status -->
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                        Payment Status
+                    </label>
+
+                    <!-- View mode -->
+                    <div
+                        x-show="!editing"
+                        class="flex h-12.5 items-center rounded-xl border border-gray-300 bg-gray-100 px-4 text-base text-gray-800"
+                        x-text="editForm.remark || '-'"
+                    ></div>
+
+                    <!-- Edit mode -->
+                    <select
+                        x-show="editing"
+                        x-model="editForm.remark"
+                        class="h-12.5 w-full rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                    >
+                        <option value="Paid">Paid</option>
+                        <option value="Unpaid">Unpaid</option>
+                    </select>
+                </div>
+
+                <!-- Expense -->
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                        Expense
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        x-model="editForm.expense"
+                        :disabled="!editing"
+                        class="h-12.5 w-full rounded-xl border border-gray-300
+                              bg-white px-4 text-base outline-none
+                              disabled:cursor-not-allowed disabled:bg-gray-100
+                              focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                    />
+                </div>
+
+            </div>
+
+            <!-- Edit / Save / Cancel -->
+            <div class="mt-5 flex justify-end gap-3">
+                <!-- Normal state -->
+                <template x-if="!editing && editBill.remark === 'Unpaid'">
+                    <button
+                        type="button"
+                        @click="startEditing()"
+                        class="rounded-lg bg-amber-500 px-5 py-2.5
+                              text-sm font-medium text-white
+                              transition hover:bg-amber-600"
+                    >
+                        Edit
+                    </button>
+                </template>
+
+                <!-- Editing state -->
+                <template x-if="editing">
+
+                    <div class="flex gap-3">
+
+                        <!-- Cancel -->
+                        <button
+                            type="button"
+                            @click="cancelEditing()"
+                            :disabled="saving"
+                            class="rounded-lg border border-gray-300
+                                  bg-white px-5 py-2.5
+                                  text-sm font-medium text-gray-700
+                                  transition hover:bg-gray-100
+                                  disabled:cursor-not-allowed
+                                  disabled:opacity-50"
+                        >
+                            Cancel
+                        </button>
+
+
+                        <!-- Save -->
+                        <button
+                            type="button"
+                            @click="saveSellBill()"
+                            :disabled="saving"
+                            class="rounded-lg bg-emerald-600 px-5 py-2.5
+                                  text-sm font-medium text-white
+                                  transition hover:bg-emerald-700
+                                  disabled:cursor-not-allowed
+                                  disabled:opacity-60"
+                        >
+                            <span
+                                x-text="saving ? 'Saving...' : 'Save Changes'"
+                            ></span>
+                        </button>
+
+                    </div>
+
+                </template>
+            </div>
+
+        </div>
+      </div>  
+        
+
+      <!-- Footer -->
+      <div class="border-t border-gray-200 bg-gray-50 px-6 py-4 text-right">
+        <button
+          type="button"
+          @click="closeBillModal()"
+          class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block javascript %}
+<script src="{{ url_for('static', path='js/exportSellBill.js') }}"></script>
+{% endblock %}

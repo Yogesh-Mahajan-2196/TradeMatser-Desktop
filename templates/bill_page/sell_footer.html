@@ -1,0 +1,116 @@
+<div
+  class="bill-footer w-full border-t border-slate-200 bg-white px-3 py-3 sm:px-4 lg:px-6"
+>
+  <div
+    class="mx-auto flex w-full max-w-4xl flex-wrap justify-center gap-3 sm:gap-4"
+  >
+    <!-- NEW -->
+    <!-- <button
+      type="button"
+      @click="newBill()"
+      class="flex h-11 min-w-32.5 flex-1 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100 sm:min-w-30 sm:flex-none"
+    >
+      <svg
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 5v14M5 12h14"
+        />
+      </svg>
+
+      <span>New</span>
+    </button> -->
+
+    <!-- SAVE -->
+    <button
+      type="button"
+      @click="saveBill()"
+      :disabled="saving"
+      class="flex h-11 min-w-32.5 flex-1 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-30 sm:flex-none"
+    >
+      <svg
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M5 5a2 2 0 0 1 2-2h8.586a2 2 0 0 1 1.414.586l1.414 1.414A2 2 0 0 1 19 6.414V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5z"
+        />
+
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 3v5h8V3" />
+
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 21v-6h8v6" />
+      </svg>
+
+      <span>Save</span>
+    </button>
+
+    <!-- PRINT -->
+    <button
+      type="button"
+      onclick="window.print()"
+      class="flex h-11 min-w-32.5 flex-1 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100 sm:min-w-30 sm:flex-none"
+    >
+      <svg
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V3h12v6" />
+
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+        />
+
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 14h12v7H6z"
+        />
+      </svg>
+
+      <span>Print</span>
+    </button>
+
+    <!-- CLEAR -->
+    <button
+      type="button"
+      @click="clearBill()"
+      class="flex h-11 min-w-32.5 flex-1 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-red-600 shadow-sm transition hover:border-red-300 hover:bg-red-50 active:bg-red-100 sm:min-w-30 sm:flex-none"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"
+        />
+
+        <path d="m5.082 11.09 8.828 8.828" />
+      </svg>
+
+      <span>Clear</span>
+    </button>
+  </div>
+</div>

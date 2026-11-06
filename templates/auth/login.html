@@ -1,0 +1,114 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+Login | MyTradeMaster 
+{% endblock %}
+
+{% block content %}
+
+<div
+  x-data="loginForm()"
+  class="flex min-h-screen items-center justify-center bg-slate-100 px-4"
+>
+  <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+    <!-- Heading -->
+
+    <div class="mb-7 text-center">
+      <h1 class="text-3xl font-bold text-slate-800">Welcome</h1>
+
+      <p class="mt-2 text-sm text-slate-500">Sign in to MyTradeMaster</p>
+    </div>
+
+    <!-- Login Form -->
+
+    <form @submit.prevent="login">
+      <!-- Email -->
+
+      <div class="mb-5">
+        <label
+          for="email"
+          class="mb-2 block text-sm font-semibold text-slate-700"
+        >
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          x-model="username"
+          placeholder="Enter your email"
+          autocomplete="email"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p
+          x-show="emailError"
+          x-text="emailError"
+          class="mt-1 text-sm text-red-600"
+        ></p>
+      </div>
+
+      <!-- Password -->
+
+      <div class="mb-5">
+        <label
+          for="password"
+          class="mb-2 block text-sm font-semibold text-slate-700"
+        >
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          x-model="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p
+          x-show="passwordError"
+          x-text="passwordError"
+          class="mt-1 text-sm text-red-600"
+        ></p>
+      </div>
+
+      <!-- API Error -->
+
+      <div
+        x-show="serverError"
+        x-text="serverError"
+        class="mb-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600"
+      ></div>
+
+      <!-- Login Button -->
+
+      <button
+        type="submit"
+        :disabled="loading"
+        class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        <span x-show="!loading"> Login </span>
+
+        <span x-show="loading"> Logging in... </span>
+      </button>
+    </form>
+    <!-- Signup Link -->
+    <p class="mt-6 text-center text-sm text-slate-600">
+      Don't have an account?
+      <a
+        href="/signup"
+        class="font-semibold text-blue-600 hover:text-blue-700"
+      >
+        Sign Up
+      </a>
+    </p>
+  </div>
+</div>
+
+{% endblock %} 
+
+{% block javascript %}
+<script src="{{ url_for('static', path='js/login.js') }}"></script>
+{% endblock %}

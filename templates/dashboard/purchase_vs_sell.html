@@ -1,0 +1,46 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div x-data="purchaseSellGraph">
+  <!-- Header -->
+
+  <div
+    class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div>
+      <h2 class="text-lg font-bold text-slate-800">Purchase vs Sell</h2>
+    </div>
+
+    <!-- Period Dropdown -->
+
+    <select
+      x-model="period"
+      @change="loadGraphData()"
+      :disabled="loading"
+      class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-500"
+    >
+      <option value="1month" selected>This Month</option>
+      <option value="7days">Last 7 Days</option>
+      <option value="1year">This Year</option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+
+  <div x-show="loading" class="mt-4 text-center text-sm text-slate-500">
+    Loading graph data...
+  </div>
+
+  <!-- Error -->
+
+  <div
+    x-show="error"
+    x-text="error"
+    class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600"
+  ></div>
+
+  <!-- Graph -->
+
+  <div class="relative mt-5 h-72">
+    <canvas x-ref="chart"></canvas>
+  </div>
+</div>

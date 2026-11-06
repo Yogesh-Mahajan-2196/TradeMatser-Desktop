@@ -1,0 +1,449 @@
+<section
+  class="w-full min-w-0 overflow-hidden border border-slate-300 bg-white"
+>
+  <!-- =========================================================
+       TOP BORDER
+       ========================================================= -->
+
+  <div class="h-1 w-full bg-emerald-900"></div>
+
+  <!-- =========================================================
+       COPY LABEL
+       ========================================================= -->
+
+  <div class="px-3 pt-2 sm:px-4 sm:pt-3">
+    <span
+      class="inline-flex items-center border border-emerald-800 px-2 py-0.5 text-[9px] font-bold text-emerald-900 sm:px-3 sm:py-1 sm:text-[10px]"
+    >
+      मूळ प्रत
+    </span>
+  </div>
+
+  <!-- =========================================================
+       BILL CONTENT
+       ========================================================= -->
+
+  <div class="px-3 pb-3 pt-2 text-emerald-950 sm:px-4 sm:pb-4 sm:pt-3">
+    <!-- =======================================================
+         HEADER
+         ======================================================= -->
+
+    <div class="border-b-2 border-emerald-800 pb-2 text-center sm:pb-3">
+      <h1
+        class="text-base font-extrabold leading-tight text-emerald-950 sm:text-lg lg:text-xl"
+      >
+        {{ bill_config.market_name }}
+      </h1>
+
+      <p
+        class="mt-0.5 text-[9px] font-semibold text-emerald-800 sm:text-[10px] lg:text-[11px]"
+      >
+        ता. {{ bill_config.market_taluka }}, जि. {{ bill_config.market_district
+        }}
+      </p>
+
+      <div
+        class="mx-auto mt-1.5 inline-flex h-7 items-center border border-emerald-800 px-3 text-[10px] font-extrabold text-emerald-900 sm:h-8 sm:px-4 sm:text-xs"
+      >
+        * विशेष पावती *
+      </div>
+    </div>
+
+    <!-- =======================================================
+         BILL NUMBER + DATE
+         ======================================================= -->
+
+    <div
+      class="flex items-center justify-between gap-3 border-b border-slate-300 py-1.5 sm:py-2"
+    >
+      <div class="text-[10px] font-semibold text-emerald-900 sm:text-xs">
+        दि.
+
+        <span class="ml-1 text-slate-700" x-text="billDate"></span>
+      </div>
+
+      <div
+        class="text-lg font-extrabold leading-none text-emerald-900 sm:text-xl"
+      >
+        {{ next_bill_no }}
+      </div>
+    </div>
+
+    <!-- =======================================================
+         PARTY INFORMATION
+         ======================================================= -->
+
+    <div
+      class="grid grid-cols-[92px_minmax(0,1fr)] gap-x-2 gap-y-1 border-b border-slate-300 py-1.5 text-[9px] sm:grid-cols-[120px_minmax(0,1fr)] sm:gap-y-1.5 sm:py-2 sm:text-[10px] lg:text-[11px]"
+    >
+      <div class="font-bold">आडत्याचे नाव :</div>
+
+      <div class="min-w-0 font-semibold text-emerald-900">
+        {{ bill_config.adat_name }}
+      </div>
+
+      <div class="font-bold">मालधन्याचे नाव :</div>
+
+      <div class="min-w-0">
+        <input
+          type="text"
+          x-model="supplierName"
+          @input="translateTransport($event)"
+          placeholder="मालधन्याचे नाव"
+          class="w-full border-0 border-b border-dashed border-slate-400 bg-transparent px-1 py-0.5 text-[9px] text-slate-700 outline-none focus:border-emerald-700 focus:ring-0 sm:text-[10px] lg:text-[11px]"
+        />
+      </div>
+
+      <div class="font-bold">वाहन क्रमांक :</div>
+
+      <div class="min-w-0">
+        <input
+          type="text"
+          x-model="transportName"
+          placeholder="वाहन क्रमांक"
+          class="w-full border-0 border-b border-dashed border-slate-400 bg-transparent px-1 py-0.5 text-[9px] uppercase text-slate-700 outline-none focus:border-emerald-700 focus:ring-0 sm:text-[10px] lg:text-[11px]"
+        />
+      </div>
+
+      <div class="font-bold">खरेदीदाराची नाव :</div>
+
+      <div class="flex min-w-0 flex-wrap gap-x-2 text-emerald-900">
+        <span class="font-semibold"> {{ bill_config.buyer_name }} </span>
+
+        <span class="text-[8px] text-slate-600 sm:text-[10px]">
+          {{ bill_config.buyer_mobile_1 }} / {{ bill_config.buyer_mobile_2 }}
+        </span>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         PRODUCT TABLE
+         ======================================================= -->
+
+    <div class="mt-2 w-full overflow-x-auto border border-emerald-800 sm:mt-3">
+      <table
+        class="w-full min-w-125 table-fixed border-collapse text-[8px] sm:text-[10px]"
+      >
+        <thead class="border-b">
+          <tr class="bg-emerald-900 text-white">
+            <th
+              rowspan="2"
+              class="w-[25%] border-r border-emerald-700 px-1 py-1.5 font-extrabold sm:py-2"
+            >
+              मालाचा प्रकार
+            </th>
+
+            <th
+              colspan="2"
+              class="w-[27%] border-r border-emerald-700 px-1 py-1 font-extrabold"
+            >
+              वजन
+            </th>
+
+            <th
+              rowspan="2"
+              class="w-[20%] border-r border-emerald-700 px-1 py-1.5 font-extrabold sm:py-2"
+            >
+              भाव दर क्विंटल
+            </th>
+
+            <th rowspan="2" class="w-[28%] px-1 py-1.5 font-extrabold sm:py-2">
+              एकूण रुपये
+            </th>
+          </tr>
+
+          <tr class="bg-emerald-900 text-white">
+            <th
+              class="border-r border-t border-emerald-700 px-1 py-1 font-semibold"
+            >
+              क्विंटल
+            </th>
+
+            <th
+              class="border-r border-t border-emerald-700 px-1 py-1 font-semibold"
+            >
+              किलो
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <!-- PRODUCT -->
+
+            <td
+              class="h-28 border-r border-emerald-800 p-1.5 align-top sm:h-32 sm:p-2"
+            >
+              <select
+                x-model="selectedProduct"
+                @change="selectProduct()"
+                class="w-full border-0 bg-transparent text-center text-[8px] font-medium text-slate-700 outline-none focus:ring-0 sm:text-[10px]"
+              >
+                <option value="">माल निवडा</option>
+
+                <template x-for="product in products" :key="product.produc_id">
+                  <option
+                    :value="product.produc_id"
+                    x-text="product.product_name"
+                  ></option>
+                </template>
+              </select>
+            </td>
+
+            <!-- WEIGHT -->
+
+            <td
+              class="border-r border-emerald-800 p-1.5 text-center align-top sm:p-2"
+            >
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                x-model.number="weightQuintal"
+                @input="calculateBill()"
+                class="w-full border-0 bg-transparent text-center text-[8px] text-slate-700 outline-none focus:ring-0 sm:text-[10px]"
+                placeholder="0"
+              />
+            </td>
+
+            <!-- KG -->
+
+            <td
+              class="border-r border-emerald-800 p-1.5 text-center align-top text-slate-700 sm:p-2"
+            >
+              <input
+                type="number"
+                min="0"
+                max="99"
+                step="1"
+                x-model.number="weightKg"
+                @input="calculateBill()"
+                placeholder="0"
+                class="w-full border-0 bg-transparent text-center text-[8px] outline-none focus:ring-0 sm:text-[10px]"
+              />
+            </td>
+
+            <!-- RATE -->
+
+            <td
+              class="border-r border-emerald-800 p-1.5 text-center align-top sm:p-2"
+            >
+              <input
+                type="number"
+                step="0.01"
+                x-model.number="rate"
+                @input="calculateBill()"
+                class="w-full border-0 bg-transparent text-center text-[8px] text-slate-700 outline-none focus:ring-0 sm:text-[10px]"
+              />
+            </td>
+
+            <!-- TOTAL -->
+
+            <td
+              class="p-1.5 text-center align-top font-bold text-slate-700 sm:p-2"
+            >
+              <span x-text="formatMoney(totalAmount)"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =======================================================
+         EXPENSE TITLE
+         ======================================================= -->
+
+    <div
+      class="flex h-7 items-center justify-center border-x border-b border-emerald-800 text-[9px] font-extrabold text-emerald-900 sm:h-8 sm:text-[10px]"
+    >
+      मालाच्या किंमतीची वजावट-
+    </div>
+
+    <!-- =======================================================
+         EXPENSE TABLE
+         ======================================================= -->
+
+    <div class="border-x border-b border-emerald-800">
+      <table
+        class="w-full table-fixed border-collapse text-[8px] sm:text-[10px]"
+      >
+        <thead>
+          <tr class="bg-emerald-50 text-emerald-900">
+            <th
+              class="w-[55%] border-b border-r border-emerald-800 px-2 py-1 font-bold sm:py-1.5"
+            >
+              इतर खर्च
+            </th>
+
+            <th
+              class="w-[45%] border-b border-emerald-800 px-2 py-1 font-bold sm:py-1.5"
+            >
+              रुपये
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <!-- =================================================
+                 JINJA EXPENSES
+                 ================================================= -->
+
+            <td
+              class="border-r border-emerald-800 px-[6%] py-1.5 sm:px-[10%] sm:py-2"
+            >
+              {% for expense in bill_config.expenses %}
+
+              <div
+                class="flex items-center justify-between gap-2 leading-5 sm:leading-6"
+              >
+                <span class="truncate"> {{ expense.name }} </span>
+
+                <span
+                  class="expense-value shrink-0 text-slate-700"
+                  data-expense-key="{{ expense.name }}"
+                  data-expense-amount="{{ expense.amount }}"
+                >
+                  {{ expense.amount }}
+                </span>
+              </div>
+
+              {% endfor %}
+
+              <!-- TOTAL EXPENSE -->
+
+              <div
+                class="flex items-center justify-between gap-2 border-red-200 pt-1 font-extrabold"
+              >
+                <span> एकूण खर्च </span>
+
+                <span x-text="formatMoney(appliedExpenseTotal)"></span>
+              </div>
+            </td>
+
+            <!-- =================================================
+                 RIGHT SIDE
+                 ================================================= -->
+
+            <td class="p-0 align-top">
+              <!-- TOTAL BILL -->
+
+              <div
+                class="flex min-h-8 items-center justify-between gap-2 border-b border-emerald-800 px-2 sm:min-h-9"
+              >
+                <span class="font-extrabold text-emerald-900">
+                  एकूण रुपये
+                </span>
+
+                <span
+                  class="shrink-0 font-semibold text-slate-700"
+                  x-text="formatMoney(totalAmount)"
+                ></span>
+              </div>
+
+              <!-- APPLY EXPENSE -->
+
+              <div
+                class="flex min-h-8 items-center justify-between gap-2 border-b border-emerald-800 px-2 sm:min-h-9"
+              >
+                <label
+                  class="flex cursor-pointer items-center gap-1.5 font-extrabold text-emerald-900"
+                >
+                  <input
+                    type="checkbox"
+                    x-model="applyExpenses"
+                    @change="calculateBill()"
+                    class="h-3 w-3 rounded border-emerald-400 text-emerald-700 focus:ring-emerald-500 sm:h-3.5 sm:w-3.5"
+                  />
+
+                  इतर खर्च
+                </label>
+
+                <span
+                  class="shrink-0 text-slate-700"
+                  x-text="formatMoney(appliedExpenseTotal)"
+                ></span>
+              </div>
+
+              <!-- PAYMENT -->
+
+              <div>
+                <div
+                  class="flex items-center justify-between gap-2 px-2 py-1.5 sm:px-3 sm:py-2"
+                >
+                  <label class="font-extrabold text-emerald-900">
+                    भरलेली रक्कम
+                  </label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    x-model.number="paidAmount"
+                    @input="calculateBill()"
+                    class="w-20 border-0 border-b border-dashed border-slate-400 bg-transparent px-1 py-1 text-right text-[9px] text-slate-700 outline-none focus:border-emerald-700 focus:ring-0 sm:w-24 sm:text-[11px]"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <!-- BALANCE -->
+
+              <div
+                class="flex min-h-10 items-center justify-between gap-2 border-t border-emerald-800 px-2 py-1.5 sm:min-h-13"
+              >
+                <span class="text-left font-extrabold text-emerald-900">
+                  खर्च वजा जाता शिल्लक रक्कम
+                </span>
+
+                <span
+                  class="whitespace-nowrap font-extrabold text-slate-700"
+                  x-text="formatMoney(netAmount)"
+                ></span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =======================================================
+         AMOUNT IN WORDS
+         ======================================================= -->
+
+    <div
+      class="flex min-h-10 items-center gap-2 border-x border-b border-emerald-800 px-2 py-1 sm:min-h-12 sm:gap-3 sm:py-1.5"
+    >
+      <div
+        class="shrink-0 text-[8px] font-extrabold text-emerald-900 sm:text-[10px]"
+      >
+        अक्षरी रुपये
+      </div>
+
+      <div
+        class="min-w-0 flex-1 border-b border-slate-400 px-1 py-1 text-[8px] text-slate-700 sm:text-[10px]"
+        x-text="amountInWords"
+      ></div>
+    </div>
+
+    <!-- =======================================================
+         SIGNATURE
+         ======================================================= -->
+
+    <div
+      class="bill-signature grid min-h-14 grid-cols-2 items-end px-3 pb-1 pt-3 sm:min-h-20 sm:px-5 sm:pt-4"
+    >
+      <div
+        class="text-left text-[8px] font-extrabold text-emerald-900 sm:text-[10px]"
+      >
+        सही / अंगठी
+      </div>
+
+      <div
+        class="text-right text-[8px] font-extrabold text-emerald-900 sm:text-[10px]"
+      >
+        आडत्याची सही
+      </div>
+    </div>
+  </div>
+</section>

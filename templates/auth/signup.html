@@ -1,0 +1,207 @@
+ 
+{% extends "base.html" %}
+
+{% block title %}
+Signup | MyTradeMaster
+{% endblock %}
+
+{% block content %}
+
+<div
+  x-data="signupForm()"
+  class="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8"
+>
+  <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+
+    <!-- Heading -->
+    <div class="mb-7 text-center">
+      <h1 class="text-3xl font-bold text-slate-800">Create Account</h1>
+      <p class="mt-2 text-sm text-slate-500">
+        Sign up for MyTradeMaster
+      </p>
+    </div>
+
+    <form @submit.prevent="signup" novalidate>
+
+      <!-- First Name and Last Name -->
+      <div class="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+        <div>
+          <label for="first_name"
+            class="mb-2 block text-sm font-semibold text-slate-700">
+            First Name
+          </label>
+
+          <input
+            id="first_name"
+            type="text"
+            x-model="first_name"
+            autocomplete="given-name"
+            placeholder="Enter first name"
+            class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+
+          <p x-show="errors.first_name"
+             x-text="errors.first_name"
+             class="mt-1 text-sm text-red-600"></p>
+        </div>
+
+        <div>
+          <label for="last_name"
+            class="mb-2 block text-sm font-semibold text-slate-700">
+            Last Name
+          </label>
+
+          <input
+            id="last_name"
+            type="text"
+            x-model="last_name"
+            autocomplete="family-name"
+            placeholder="Enter last name"
+            class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+
+          <p x-show="errors.last_name"
+             x-text="errors.last_name"
+             class="mt-1 text-sm text-red-600"></p>
+        </div>
+
+      </div>
+
+      <!-- Email -->
+      <div class="mb-5">
+        <label for="email"
+          class="mb-2 block text-sm font-semibold text-slate-700">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          x-model="email"
+          autocomplete="email"
+          placeholder="Enter your email"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p x-show="errors.email"
+           x-text="errors.email"
+           class="mt-1 text-sm text-red-600"></p>
+      </div>
+
+      <!-- Mobile Number -->
+      <div class="mb-5">
+        <label for="mobile_no"
+          class="mb-2 block text-sm font-semibold text-slate-700">
+          Mobile Number
+        </label>
+
+        <input
+          id="mobile_no"
+          type="tel"
+          x-model="mobile_no"
+          autocomplete="tel"
+          inputmode="numeric"
+          maxlength="10"
+          placeholder="Enter 10-digit mobile number"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p x-show="errors.mobile_no"
+           x-text="errors.mobile_no"
+           class="mt-1 text-sm text-red-600"></p>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-5">
+        <label for="password"
+          class="mb-2 block text-sm font-semibold text-slate-700">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          x-model="password"
+          autocomplete="new-password"
+          placeholder="Create a password"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p x-show="errors.password"
+           x-text="errors.password"
+           class="mt-1 text-sm text-red-600"></p>
+
+        <p class="mt-2 text-xs text-slate-500">
+          Use 8–20 characters with uppercase, lowercase, a number,
+          and a special character. Do not use spaces.
+        </p>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="mb-5">
+        <label for="confirm_password"
+          class="mb-2 block text-sm font-semibold text-slate-700">
+          Confirm Password
+        </label>
+
+        <input
+          id="confirm_password"
+          type="password"
+          x-model="confirm_password"
+          autocomplete="new-password"
+          placeholder="Re-enter your password"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p x-show="errors.confirm_password"
+           x-text="errors.confirm_password"
+           class="mt-1 text-sm text-red-600"></p>
+      </div>
+
+      <!-- API Error -->
+      <div
+        x-show="serverError"
+        x-text="serverError"
+        role="alert"
+        class="mb-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600"
+      ></div>
+
+      <!-- Success Message -->
+      <div
+        x-show="successMessage"
+        x-text="successMessage"
+        role="status"
+        class="mb-5 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700"
+      ></div>
+
+      <!-- Signup Button -->
+      <button
+        type="submit"
+        :disabled="loading"
+        class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        <span x-show="!loading">Create Account</span>
+        <span x-show="loading">Creating Account...</span>
+      </button>
+
+      <!-- Login Link -->
+      <p class="mt-6 text-center text-sm text-slate-600">
+        Already have an account?
+        <a
+          href="/login"
+          class="font-semibold text-blue-600 hover:text-blue-700"
+        >
+          Login
+        </a>
+      </p>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', path='js/signup.js') }}"></script>
+{% endblock %}

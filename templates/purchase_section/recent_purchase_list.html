@@ -1,0 +1,256 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+Recent Purchase Bills |
+MyTradeMaster 
+{% endblock %} 
+
+
+{% block content %}
+
+<div
+  class="flex min-h-screen"
+  x-data="purchaseBills()"
+  x-init="loadPurchases()"
+>
+  {% include "dashboard/sidebar.html" %}
+
+  <div class="flex min-w-0 flex-1 flex-col">
+    {% include "dashboard/navbar.html" %}
+
+    <!-- Main Content -->
+
+    <main
+      class="min-w-0 flex-1 overflow-x-hidden bg-slate-100 p-4 sm:p-5 lg:p-6"
+    >
+      <!-- Page Header -->
+
+      <div
+        class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800">
+            Recent Purchase Bills
+          </h1>
+
+          <p class="mt-1 text-sm text-slate-500">
+            View all purchase bill records.
+          </p>
+        </div>
+
+        <!-- Back Button -->
+
+        <a
+          href="/dashboard"
+          class="inline-flex w-fit items-center rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          ← Back to Dashboard
+        </a>
+      </div>
+
+      <!-- Purchase Table -->
+
+      <section
+        class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      >
+        <!-- Table -->
+
+        <div class="overflow-x-auto">
+          <table class="min-w-175 w-full text-left text-sm">
+            <!-- Table Header -->
+
+            <thead class="bg-slate-50 text-slate-600">
+              <tr>
+                <th class="whitespace-nowrap px-5 py-4 font-semibold">
+                  Bill No
+                </th>
+
+                <th class="whitespace-nowrap px-5 py-4 font-semibold">
+                  Bill Date
+                </th>
+
+                <th class="whitespace-nowrap px-5 py-4 font-semibold">
+                  Farmer Name
+                </th>
+
+                <th
+                  class="whitespace-nowrap px-5 py-4 text-right font-semibold"
+                >
+                  Total Amount
+                </th>
+              </tr>
+            </thead>
+
+            <!-- Table Body -->
+
+            <tbody>
+              <!-- Loading -->
+
+              <template x-if="loading">
+                <tr>
+                  <td colspan="4" class="px-5 py-16 text-center text-slate-500">
+                    Loading purchase bills...
+                  </td>
+                </tr>
+              </template>
+
+              <!-- Purchase Data -->
+
+              <template x-for="purchase in purchases" :key="purchase.bill_no">
+                <tr
+                  class="border-t border-slate-100 transition hover:bg-slate-50"
+                >
+                  <!-- Bill Number -->
+
+                  <td
+                    class="whitespace-nowrap px-5 py-4 font-semibold text-blue-600"
+                  >
+                    <a
+                      :href="`/purchase-bill/${purchase.bill_no}`"
+                      class="hover:text-blue-800 hover:underline"
+                    >
+                      <span x-text="`PB-${purchase.bill_no}`"></span>
+                    </a>
+                  </td>
+
+                  <!-- Bill Date -->
+
+                  <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                    <span x-text="formatDate(purchase.date)"></span>
+                  </td>
+
+                  <!-- Farmer Name -->
+
+                  <td class="whitespace-nowrap px-5 py-4 text-slate-700">
+                    <span x-text="purchase.customer_name"></span>
+                  </td>
+
+                  <!-- Total Amount -->
+
+                  <td
+                    class="whitespace-nowrap px-5 py-4 text-right font-semibold text-slate-800"
+                  >
+                    ₹
+
+                    <span
+                      x-text="
+                        formatAmount(
+                          purchase.total_amount
+                        )
+                      "
+                    ></span>
+                  </td>
+                </tr>
+              </template>
+
+              <!-- No Records -->
+
+              <template
+                x-if="
+                  !loading &&
+                  purchases.length === 0 &&
+                  !error
+                "
+              >
+                <tr>
+                  <td colspan="4" class="px-5 py-16 text-center text-slate-500">
+                    No purchase bills found.
+                  </td>
+                </tr>
+              </template>
+
+              <!-- Error -->
+
+              <template x-if="error">
+                <tr>
+                  <td colspan="4" class="px-5 py-16 text-center text-red-600">
+                    <span x-text="error"></span>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+
+        <div
+          x-show="totalPages > 1"
+          x-cloak
+          class="flex flex-col gap-4 border-t border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <!-- Page Information -->
+
+          <p class="text-sm text-slate-500">
+            Page
+
+            <span class="font-semibold text-slate-700" x-text="page"></span>
+
+            of
+
+            <span
+              class="font-semibold text-slate-700"
+              x-text="totalPages"
+            ></span>
+
+            <span class="ml-1">
+              (
+
+              <span x-text="totalRecords"></span>
+
+              records)
+            </span>
+          </p>
+
+          <!-- Buttons -->
+
+          <div class="flex items-center gap-2">
+            <!-- Previous -->
+
+            <button
+              type="button"
+              @click="previousPage()"
+              :disabled="
+                page <= 1 ||
+                loading
+              "
+              :class="
+                page <= 1 || loading
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'hover:bg-slate-100'
+              "
+              class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+            >
+              Previous
+            </button>
+
+            <!-- Next -->
+
+            <button
+              type="button"
+              @click="nextPage()"
+              :disabled="
+                page >= totalPages ||
+                loading
+              "
+              :class="
+                page >= totalPages || loading
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'hover:bg-blue-700'
+              "
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', path='js/view_recent_purchase.js') }}"></script>
+{% endblock %}

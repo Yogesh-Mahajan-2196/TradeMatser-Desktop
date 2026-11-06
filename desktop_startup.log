@@ -1,0 +1,224 @@
+2026-11-05 22:51:33,609 INFO Creating any missing database tables from current SQLAlchemy models.
+2026-11-05 22:51:35,561 INFO Started server process [19372]
+2026-11-05 22:51:35,561 INFO Waiting for application startup.
+2026-11-05 22:51:35,570 INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-11-05 22:51:35,572 INFO Added job "scheduled_daily_report" to job store "default"
+2026-11-05 22:51:35,572 INFO Scheduler started
+2026-11-05 22:51:35,572 INFO Application startup complete.
+2026-11-05 22:51:35,573 INFO Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+2026-11-05 22:52:40,041 INFO Shutting down
+2026-11-05 22:52:40,152 INFO Waiting for application shutdown.
+2026-11-05 22:52:40,153 INFO Scheduler has been shut down
+2026-11-05 22:52:40,153 INFO Application shutdown complete.
+2026-11-05 22:52:40,153 INFO Finished server process [19372]
+2026-11-05 22:52:40,157 ERROR Exception closing connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000014372AB27A0>>
+Traceback (most recent call last):
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 903, in close
+    self.await_(self._connection.close())
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\asyncpg\connection.py", line 1513, in close
+    await self._protocol.close(timeout)
+  File "asyncpg/protocol/protocol.pyx", line 630, in close
+  File "asyncpg/protocol/coreproto.pyx", line 1205, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg/protocol/protocol.pyx", line 956, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'send'
+2026-11-05 22:57:04,071 INFO Creating any missing database tables from current SQLAlchemy models.
+2026-11-05 22:57:06,020 INFO Started server process [20832]
+2026-11-05 22:57:06,092 INFO Waiting for application startup.
+2026-11-05 22:57:06,099 INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-11-05 22:57:06,101 INFO Added job "scheduled_daily_report" to job store "default"
+2026-11-05 22:57:06,101 INFO Scheduler started
+2026-11-05 22:57:06,101 INFO Application startup complete.
+2026-11-05 22:57:06,102 INFO Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+2026-11-05 22:59:43,419 INFO Shutting down
+2026-11-05 22:59:43,528 INFO Waiting for application shutdown.
+2026-11-05 22:59:43,530 INFO Scheduler has been shut down
+2026-11-05 22:59:43,531 INFO Application shutdown complete.
+2026-11-05 22:59:43,531 INFO Finished server process [20832]
+2026-11-05 22:59:43,538 ERROR Exception closing connection <AdaptedConnection <asyncpg.connection.Connection object at 0x000002F0758B3880>>
+Traceback (most recent call last):
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 903, in close
+    self.await_(self._connection.close())
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\asyncpg\connection.py", line 1513, in close
+    await self._protocol.close(timeout)
+  File "asyncpg/protocol/protocol.pyx", line 630, in close
+  File "asyncpg/protocol/coreproto.pyx", line 1205, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg/protocol/protocol.pyx", line 956, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'send'
+2026-11-05 23:00:02,292 INFO Creating any missing database tables from current SQLAlchemy models.
+2026-11-05 23:00:04,669 INFO Started server process [14420]
+2026-11-05 23:00:04,670 INFO Waiting for application startup.
+2026-11-05 23:00:04,677 INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-11-05 23:00:04,679 INFO Added job "scheduled_daily_report" to job store "default"
+2026-11-05 23:00:04,679 INFO Scheduler started
+2026-11-05 23:00:04,680 INFO Application startup complete.
+2026-11-05 23:00:04,680 INFO Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+2026-11-05 23:05:28,937 INFO Shutting down
+2026-11-05 23:05:29,047 INFO Waiting for application shutdown.
+2026-11-05 23:05:29,050 INFO Scheduler has been shut down
+2026-11-05 23:05:29,050 INFO Application shutdown complete.
+2026-11-05 23:05:29,050 INFO Finished server process [14420]
+2026-11-05 23:05:29,058 ERROR Exception closing connection <AdaptedConnection <asyncpg.connection.Connection object at 0x000002C9900AF880>>
+Traceback (most recent call last):
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 903, in close
+    self.await_(self._connection.close())
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\asyncpg\connection.py", line 1513, in close
+    await self._protocol.close(timeout)
+  File "asyncpg/protocol/protocol.pyx", line 630, in close
+  File "asyncpg/protocol/coreproto.pyx", line 1205, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg/protocol/protocol.pyx", line 956, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'send'
+2026-11-05 23:05:51,565 INFO Creating any missing database tables from current SQLAlchemy models.
+2026-11-05 23:05:55,133 INFO Started server process [23292]
+2026-11-05 23:05:55,133 INFO Waiting for application startup.
+2026-11-05 23:05:55,143 INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-11-05 23:05:55,148 INFO Added job "scheduled_daily_report" to job store "default"
+2026-11-05 23:05:55,148 INFO Scheduler started
+2026-11-05 23:05:55,149 INFO Application startup complete.
+2026-11-05 23:05:55,149 INFO Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+2026-11-05 23:09:36,582 ERROR Exception in ASGI application
+Traceback (most recent call last):
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 1764, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 136, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 690, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\fastapi\routing.py", line 344, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\modules\reports\api_router.py", line 111, in export_sell_report_api
+    file_path = await export_sell_report(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\modules\reports\repository.py", line 342, in export_sell_report
+    sell.user.party_name,
+    ^^^^^^^^^
+AttributeError: 'SellBill' object has no attribute 'user'
+2026-11-05 23:19:01,585 INFO Shutting down
+2026-11-05 23:19:01,696 INFO Waiting for application shutdown.
+2026-11-05 23:19:01,706 INFO Scheduler has been shut down
+2026-11-05 23:19:01,707 INFO Application shutdown complete.
+2026-11-05 23:19:01,707 INFO Finished server process [23292]
+2026-11-05 23:19:01,820 ERROR Exception closing connection <AdaptedConnection <asyncpg.connection.Connection object at 0x000001CA40F72B60>>
+Traceback (most recent call last):
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 903, in close
+    self.await_(self._connection.close())
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\desktop version\trademaster_desktop\.venv\Lib\site-packages\asyncpg\connection.py", line 1513, in close
+    await self._protocol.close(timeout)
+  File "asyncpg/protocol/protocol.pyx", line 630, in close
+  File "asyncpg/protocol/coreproto.pyx", line 1205, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg/protocol/protocol.pyx", line 956, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'send'
+2026-11-05 23:21:35,953 INFO Creating any missing database tables from current SQLAlchemy models.
+2026-11-05 23:21:39,720 INFO Started server process [19028]
+2026-11-05 23:21:39,720 INFO Waiting for application startup.
+2026-11-05 23:21:39,729 INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-11-05 23:21:39,741 INFO Added job "scheduled_daily_report" to job store "default"
+2026-11-05 23:21:39,741 INFO Scheduler started
+2026-11-05 23:21:39,741 INFO Application startup complete.
+2026-11-05 23:21:39,742 INFO Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)

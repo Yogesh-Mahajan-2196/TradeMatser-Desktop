@@ -1,0 +1,469 @@
+{% extends "base.html" %} {% block title %} Parties | MyTradeMaster {% endblock
+%} {% block content %}
+
+<div class="flex h-screen overflow-hidden bg-gray-50" x-data="partyManager()" x-init="loadCustomers()">
+  {% include "dashboard/sidebar.html" %}
+
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    {% include "dashboard/navbar.html" %}
+
+    <!-- Main Content -->
+
+    <main
+      class="min-w-0 flex-1 overflow-x-hidden bg-slate-100 p-4 sm:p-5 lg:p-6"
+    >
+      <!-- Page Header -->
+
+      <div
+        class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800">Parties</h1>
+
+          <p class="mt-1 text-sm text-slate-500">
+            View and search your customers.
+          </p>
+        </div>
+
+        <!-- Dashboard Button -->
+
+        <a
+          href="/dashboard"
+          class="inline-flex w-fit items-center justify-center rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          ← Back to Dashboard
+        </a>
+      </div>
+
+      <!-- Search Filters -->
+
+      <section
+        class="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <!-- Search by Name -->
+
+          <div>
+            <div class="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+
+              <input
+                id="customer-name"
+                type="text"
+                x-model.trim="nameFilter"
+                @input.debounce.500ms="loadCustomers(1)"
+                placeholder="Enter party name"
+                class="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          <!-- Search by Mobile -->
+
+          <div>
+            <div class="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+
+                <path d="M12 18h.01"></path>
+              </svg>
+
+              <input
+                id="mobile-number"
+                type="text"
+                inputmode="numeric"
+                maxlength="10"
+                x-model.trim="mobileFilter"
+                @input.debounce.500ms="searchMobile()"
+                placeholder="Enter mobile number"
+                class="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          <!-- Party Type Filter -->
+          <div>
+            <div class="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 5h16" />
+
+                <path d="M7 12h10" />
+
+                <path d="M10 19h4" />
+              </svg>
+
+              <select
+                id="party-type"
+                x-model="partyTypeFilter"
+                @change="loadCustomers(1)"
+                class="w-full appearance-none rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-10 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              >
+                <option value="">All Party Types</option>
+
+                <option value="CUSTOMER">Customer</option>
+
+                <option value="SUPPLIER">Supplier</option>
+
+                <option value="BROKER">Broker</option>
+              </select>
+
+              <!-- Dropdown Arrow -->
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Clear Filters -->
+          <div
+              x-show="
+                nameFilter ||
+                mobileFilter ||
+                partyTypeFilter
+              "
+              x-cloak
+              class="flex justify-end"
+            >
+
+              <button
+                type="button"
+                @click="clearFilters()"
+                title="Clear filters"
+                class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+              >
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+
+              </button>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Loading -->
+
+      <div
+        x-show="loading"
+        x-cloak
+        class="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm"
+      >
+        <p class="text-sm text-slate-500">Loading parties...</p>
+      </div>
+
+      <!-- Error -->
+
+      <div
+        x-show="error"
+        x-cloak
+        class="mb-5 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+      >
+        <span x-text="error"></span>
+      </div>
+
+      <!-- Customer Cards -->
+
+      <div
+        x-show="
+          !loading &&
+          customers.length > 0
+        "
+        x-cloak
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+      >
+        <template
+          x-for="customer in customers"
+          :key="customer.mobile_number"
+        >
+          <article
+            class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
+          >
+            <!-- Customer Header -->
+
+            <div class="flex items-center gap-4">
+              <!-- Customer Icon -->
+
+              <div
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="7" r="4" />
+
+                  <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
+                </svg>
+              </div>
+
+              <!-- Name -->
+
+              <div class="min-w-0">
+                <h2
+                  class="truncate text-lg font-bold text-slate-800"
+                  x-text="customer.customer_name"
+                ></h2>
+
+                <span
+                  class="mt-1 inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600"
+                  x-text="customer.party_type"
+                ></span>
+              </div>
+            </div>
+
+            <!-- Customer Details -->
+
+            <div class="mt-5 space-y-3 border-t border-slate-100 pt-4">
+              <!-- Mobile -->
+
+              <div class="flex items-center gap-3 text-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 shrink-0 text-slate-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+
+                  <path d="M12 18h.01" />
+                </svg>
+
+                <span
+                  class="text-slate-600"
+                  x-text="customer.mobile_number"
+                ></span>
+              </div>
+
+              <!-- City -->
+
+              <div class="flex items-center gap-3 text-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 shrink-0 text-slate-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+
+                  <circle cx="12" cy="10" r="2" />
+                </svg>
+
+                <span
+                  class="truncate text-slate-600"
+                  x-text="customer.city || 'Not available'"
+                ></span>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
+
+      <!-- No Records -->
+
+      <div
+        x-show="
+          !loading &&
+          customers.length === 0 &&
+          !error
+        "
+        x-cloak
+        class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center"
+      >
+        <h2 class="text-lg font-bold text-slate-700">No parties found</h2>
+
+        <p class="mt-2 text-sm text-slate-500">
+          Try changing the name or mobile number filter.
+        </p>
+      </div>
+
+      <!-- Pagination -->
+
+      <div
+        x-show="
+          !loading &&
+          totalPages > 1
+        "
+        x-cloak
+        class="mt-8 flex flex-col items-center justify-center gap-4"
+      >
+
+        <!-- Page Information -->
+
+        <p
+          class="text-sm text-slate-500"
+        >
+
+          Showing page
+
+          <span
+            class="font-semibold text-slate-700"
+            x-text="page"
+          ></span>
+
+          of
+
+          <span
+            class="font-semibold text-slate-700"
+            x-text="totalPages"
+          ></span>
+
+          <span class="ml-1">
+
+            (
+
+            <span
+              x-text="totalRecords"
+            ></span>
+
+            parties)
+
+          </span>
+
+        </p>
+
+
+        <!-- Pagination Buttons -->
+
+        <div
+          class="flex items-center gap-3"
+        >
+
+          <!-- Previous -->
+
+          <button
+            type="button"
+            @click="previousPage()"
+            :disabled="
+              page <= 1 ||
+              loading
+            "
+            class="
+              rounded-lg
+              border
+              border-slate-300
+              px-4
+              py-2
+              text-sm
+              font-semibold
+              text-slate-700
+              transition
+              hover:bg-slate-100
+              disabled:cursor-not-allowed
+              disabled:opacity-40
+            "
+          >
+
+            ← Previous
+
+          </button>
+
+
+          <!-- Current Page -->
+
+          <span
+            class="
+              flex
+              h-10
+              min-w-10
+              items-center
+              justify-center
+              rounded-lg
+              bg-blue-600
+              px-3
+              text-sm
+              font-semibold
+              text-white
+            "
+            x-text="page"
+          ></span>
+
+
+          <!-- Next -->
+
+          <button
+            type="button"
+            @click="nextPage()"
+            :disabled="
+              page >= totalPages ||
+              loading
+            "
+            class="
+              rounded-lg
+              bg-blue-600
+              px-4
+              py-2
+              text-sm
+              font-semibold
+              text-white
+              transition
+              hover:bg-blue-700
+              disabled:cursor-not-allowed
+              disabled:opacity-40
+            "
+          >
+
+            Next →
+
+          </button>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %} {% block javascript %}
+
+<script src="{{ url_for(
+    'static',
+    path='js/parties.js'
+  ) }}"></script>
+
+{% endblock %}

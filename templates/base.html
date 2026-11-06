@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            MyGrain Merchant
+        {% endblock %}
+    </title>
+    <script src="{{ url_for('static', path='js/login.js') }}"></script>
+    <script
+        src="{{ url_for('static', path='js/base.js') }}"
+    ></script>
+    <link href="{{url_for('static',path='css/output.css')}}" rel="stylesheet"/>
+    {% block css %}
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script
+        defer
+        src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
+    </script>
+</head>
+<body class="bg-slate-100 text-slate-800">
+    {% block content %}
+    {% endblock %}
+
+    {% block javascript  %}
+    {% endblock %}
+</body>
+</html>
