@@ -13,11 +13,6 @@ from .repository import get_user, user_register, authenticate_user,create_access
 from jose import jwt
 from jose.exceptions import JWTError
 
-# oauth2_scheme = OAuth2PasswordBearer(
-#     tokenUrl="/login",
-#     auto_error=False
-# )
-
 auth_router = APIRouter(
     tags= auth_setting.TAG
 )
